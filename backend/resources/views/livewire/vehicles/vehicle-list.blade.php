@@ -55,6 +55,13 @@
 
                         <div class="mt-4 flex space-x-2">
                             <a 
+                                href="{{ route('services.history', $vehicle) }}" 
+                                class="flex-1 text-center bg-green-100 text-green-700 px-3 py-2 rounded hover:bg-green-200"
+                                wire:navigate
+                            >
+                                Services
+                            </a>
+                            <a 
                                 href="{{ route('vehicles.edit', $vehicle) }}" 
                                 class="flex-1 text-center bg-blue-100 text-blue-700 px-3 py-2 rounded hover:bg-blue-200"
                                 wire:navigate
