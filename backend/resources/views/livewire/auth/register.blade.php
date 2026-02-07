@@ -1,64 +1,56 @@
 <div class="max-w-md mx-auto mt-10">
-    <div class="bg-white shadow-lg rounded-lg p-8">
-        <h2 class="text-2xl font-bold text-center mb-6">Create Your Account</h2>
+    <div class="glass-panel rounded-xl p-8 backdrop-blur-xl relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-1 h-full bg-gradient-to-b from-red-600 to-gt-accent-orange"></div>
 
-        <form wire:submit="register" class="space-y-4">
+        <div class="text-center mb-8">
+            <h2 class="text-2xl font-bold text-white tracking-wide uppercase italic">New River Registration</h2>
+            <div class="h-1 w-24 bg-gt-accent-orange mx-auto mt-2 rounded-full shadow-[0_0_10px_rgba(255,107,53,0.5)]"></div>
+        </div>
+
+        <form wire:submit="register" class="space-y-6">
             <div>
-                <label for="name" class="block text-sm font-medium text-gray-700">Full Name</label>
+                <label for="name" class="block text-xs font-bold text-gt-text-secondary uppercase tracking-wider mb-2">Driver Name</label>
                 <input 
                     type="text" 
                     id="name"
                     wire:model="name" 
-                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                    class="input-gt w-full rounded focus:ring-1 transition-all duration-300"
+                    placeholder="Your Name"
                 >
-                @error('name') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                @error('name') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
             </div>
 
             <div>
-                <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                <label for="email" class="block text-xs font-bold text-gt-text-secondary uppercase tracking-wider mb-2">Email Address</label>
                 <input 
                     type="email" 
                     id="email"
                     wire:model="email" 
-                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                    class="input-gt w-full rounded focus:ring-1 transition-all duration-300"
+                    placeholder="racer@example.com"
                 >
-                @error('email') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                @error('email') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
             </div>
 
             <div>
-                <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+                <label for="password" class="block text-xs font-bold text-gt-text-secondary uppercase tracking-wider mb-2">Password</label>
                 <input 
                     type="password" 
                     id="password"
                     wire:model="password" 
-                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                    class="input-gt w-full rounded focus:ring-1 transition-all duration-300"
                 >
-                @error('password') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                @error('password') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
             </div>
 
             <div>
-                <label for="password_confirmation" class="block text-sm font-medium text-gray-700">Confirm Password</label>
+                <label for="password_confirmation" class="block text-xs font-bold text-gt-text-secondary uppercase tracking-wider mb-2">Confirm Password</label>
                 <input 
                     type="password" 
                     id="password_confirmation"
                     wire:model="password_confirmation" 
-                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                    class="input-gt w-full rounded focus:ring-1 transition-all duration-300"
                 >
-            </div>
-
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">I am a...</label>
-                <div class="space-y-2">
-                    <label class="flex items-center">
-                        <input type="radio" wire:model="role" value="car_owner" class="text-blue-600">
-                        <span class="ml-2">Car Owner (personal use)</span>
-                    </label>
-                    <label class="flex items-center">
-                        <input type="radio" wire:model="role" value="fleet_manager" class="text-blue-600">
-                        <span class="ml-2">Fleet Manager (up to 10 vehicles)</span>
-                    </label>
-                </div>
-                @error('role') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
             </div>
 
             <button 

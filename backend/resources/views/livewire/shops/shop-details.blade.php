@@ -1,75 +1,29 @@
-<div>
-    <div class="p-6">
-        <div class="flex justify-between items-start">
-            <div>
-                <h2 class="text-2xl font-bold text-gray-900">{{ $shop->name }}</h2>
-                <p class="text-gray-600 mt-1">{{ $shop->city }}</p>
-            </div>
-            <div class="flex items-center space-x-2">
-                @if($shop->is_verified)
-                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
-                        <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                        </svg>
-                        Verified
-                    </span>
-                @endif
-                <button 
-                    wire:click="toggleFavorite"
-                    class="p-2 rounded-full transition-colors {{ $isFavorited ? 'text-red-600 bg-red-100 hover:bg-red-200' : 'text-gray-400 hover:text-red-600 hover:bg-red-50' }}"
-                    title="{{ $isFavorited ? 'Remove from favorites' : 'Add to favorites' }}"
-                >
-                    <svg class="w-6 h-6" fill="{{ $isFavorited ? 'currentColor' : 'none' }}" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
-                    </svg>
-                </button>
-            </div>
-        </div>
+@if($shop)
+    <div
+        class="fixed inset-0 z-[500] flex items-end sm:items-center justify-center p-4 sm:p-6"
+        x-data="{ show: true }"
+        x-show="show"
+        x-transition:enter="transition ease-out duration-300"
+        x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+        x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
+        x-transition:leave="transition ease-in duration-200"
+        x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
+        x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+    >
+        <!-- Backdrop -->
+        <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" @click="$dispatch('close-modal')"></div>
 
-        <div class="mt-6 space-y-4">
-            <div>
-                <h3 class="text-sm font-medium text-gray-900">Address</h3>
-                <p class="mt-1 text-gray-600">{{ $shop->address }}</p>
-                @if($shop->postal_code)
-                    <p class="text-gray-600">{{ $shop->city }}, {{ $shop->postal_code }}</p>
-                @else
-                    <p class="text-gray-600">{{ $shop->city }}</p>
-                @endif
-            </div>
-
-            @if($shop->services_offered)
+        <!-- Modal Panel -->
+        <div class="glass-panel w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-xl shadow-2xl relative flex flex-col">
+            <!-- Header -->
+            <div class="sticky top-0 z-10 bg-gt-bg-900/95 backdrop-blur border-b border-white/5 p-6 flex justify-between items-start">
                 <div>
-                    <h3 class="text-sm font-medium text-gray-900">Services Offered</h3>
-                    <div class="mt-2 flex flex-wrap gap-2">
-                        @foreach($shop->services_offered as $service)
-                            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
-                                {{ ucwords(str_replace('_', ' ', $service)) }}
+                    <h2 class="text-3xl font-bold text-white italic tracking-wide uppercase flex items-center gap-3">
+                        {{ $shop->name }}
+                        @if($shop->is_verified)
+                            <span title="GT Certified" class="text-gt-accent-cyan">
+                                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
                             </span>
-                        @endforeach
-                    </div>
-                </div>
-            @endif
-
-            @if($shop->operating_hours)
-                <div>
-                    <h3 class="text-sm font-medium text-gray-900">Operating Hours</h3>
-                    <p class="mt-1 text-gray-600 whitespace-pre-line">{{ $shop->operating_hours }}</p>
-                </div>
-            @endif
-
-            <div class="border-t border-gray-200 pt-4">
-                <button 
-                    wire:click="toggleContactInfo"
-                    class="flex items-center text-blue-600 hover:text-blue-800 font-medium"
-                >
-                    <span>{{ $showContactInfo ? 'Hide Contact Info' : 'Show Contact Info' }}</span>
-                    <svg class="w-5 h-5 ml-1 transform transition-transform {{ $showContactInfo ? 'rotate-180' : '' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-                    </svg>
-                </button>
-
-                @if($showContactInfo)
-                    <div class="mt-4 space-y-3" wire:transition>
                         @if($shop->phone)
                             <div class="flex items-center">
                                 <svg class="w-5 h-5 text-gray-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">

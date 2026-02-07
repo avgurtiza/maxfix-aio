@@ -1,143 +1,150 @@
-<div class="bg-white rounded-lg shadow-lg overflow-hidden">
-    <div class="p-6 border-b border-gray-200">
-        <h2 class="text-2xl font-bold text-gray-900 mb-4">Service Shops Map</h2>
-
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div>
-                <label for="city" class="block text-sm font-medium text-gray-700 mb-1">City</label>
-                <select 
-                    id="city" 
-                    wire:model.live="city" 
-                    class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                >
-                    <option value="">All Cities</option>
-                    <option value="Makati">Makati</option>
-                    <option value="Quezon City">Quezon City</option>
-                    <option value="Manila">Manila</option>
-                    <option value="Taguig">Taguig</option>
-                    <option value="Pasig">Pasig</option>
-                    <option value="Parañaque">Parañaque</option>
-                    <option value="Las Piñas">Las Piñas</option>
-                    <option value="Muntinlupa">Muntinlupa</option>
-                    <option value="Marikina">Marikina</option>
-                    <option value="Pasay">Pasay</option>
-                    <option value="Valenzuela">Valenzuela</option>
-                    <option value="Caloocan">Caloocan</option>
-                    <option value="Malabon">Malabon</option>
-                    <option value="Navotas">Navotas</option>
-                    <option value="San Juan">San Juan</option>
-                </select>
-            </div>
-
-            <div>
-                <label for="service" class="block text-sm font-medium text-gray-700 mb-1">Service Type</label>
-                <select 
-                    id="service" 
-                    wire:model.live="serviceType" 
-                    class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                >
-                    <option value="">All Services</option>
-                    <option value="oil_change">Oil Change</option>
-                    <option value="brakes">Brake Service</option>
-                    <option value="tires">Tire Service</option>
-                    <option value="engine">Engine Repair</option>
-                    <option value="electrical">Electrical</option>
-                    <option value="ac">Air Conditioning</option>
-                </select>
-            </div>
-
-            <div class="flex items-end">
-                <a href="{{ route('shops.index') }}" class="w-full bg-gray-100 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-200 text-center">
-                    List View
-                </a>
-            </div>
-        </div>
+<div 
+    id="map" 
+    class="w-full h-full bg-gt-bg-900 relative" 
+    wire:ignore
+>
+    <!-- Custom Map Controls Overlay -->
+    <div class="absolute bottom-6 right-6 z-[400] flex flex-col gap-2">
+        <button 
+            id="map-zoom-in"
+            class="w-10 h-10 bg-gt-bg-900/90 text-white rounded flex items-center justify-center border border-white/10 hover:bg-gt-accent-orange hover:border-gt-accent-orange transition-colors shadow-lg backdrop-blur-sm"
+        >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
+        </button>
+        <button 
+            id="map-zoom-out"
+            class="w-10 h-10 bg-gt-bg-900/90 text-white rounded flex items-center justify-center border border-white/10 hover:bg-gt-accent-orange hover:border-gt-accent-orange transition-colors shadow-lg backdrop-blur-sm"
+        >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"/></svg>
+        </button>
     </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-3">
-        <div class="w-full lg:w-1/3 border-r border-gray-200 max-h-[600px] overflow-y-auto">
-            @if($shops->isEmpty())
-                <div class="p-8 text-center text-gray-500">
-                    <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
-                    </svg>
-                    <p class="mt-2 text-sm">No shops found matching your criteria</p>
-                </div>
-            @else
-                <div class="divide-y divide-gray-200">
-                    @foreach($shops as $shop)
-                        <div class="p-4 hover:bg-gray-50 cursor-pointer" 
-                             x-data="{ 
-                                 showOnMap() { 
-                                     if (window.shopMap) { 
-                                         window.shopMap.setView([{{ $shop->latitude }}, {{ $shop->longitude }}], 16); 
-                                         if (window.shopMarkers[{{ $shop->id }}]) { 
-                                             window.shopMarkers[{{ $shop->id }}].openPopup(); 
-                                         } 
-                                     } 
-                                 } 
-                             }"
-                             @click="showOnMap()">
-                            <h3 class="font-semibold text-gray-900">{{ $shop->name }}</h3>
-                            <p class="text-sm text-gray-600">{{ $shop->address }}</p>
-                            <p class="text-sm text-gray-500">{{ $shop->city }}</p>
-                            @if($shop->phone)
-                                <p class="text-sm text-gray-600 mt-1">📞 {{ $shop->phone }}</p>
-                            @endif
-                            @if($shop->services_offered)
-                                <div class="mt-2 flex flex-wrap gap-1">
-                                    @foreach(array_slice($shop->services_offered, 0, 3) as $service)
-                                        <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800">
-                                            {{ ucfirst(str_replace('_', ' ', $service)) }}
-                                        </span>
-                                    @endforeach
-                                </div>
-                            @endif
-                            <div class="mt-2 flex space-x-2">
-                                <a href="{{ route('shops.show', $shop) }}" class="text-sm text-blue-600 hover:text-blue-700">View Details</a>
-                            </div>
-                        </div>
-                    @endforeach
-                </div>
-            @endif
-        </div>
-
-        <div class="w-full lg:w-2/3">
-            <div id="map" class="h-[600px]" 
-                 x-data="{ 
-                     initMap() { 
-                         if (typeof L === 'undefined') {
-                             console.error('Leaflet not loaded');
-                             return;
-                         }
-                         
-                         const map = L.map('map').setView([{{ $mapCenterLat }}, {{ $mapCenterLng }}], {{ $mapZoom }});
-                         
-                         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-                             maxZoom: 19
-                         }).addTo(map);
-                         
-                         const shops = @js($shops->toArray());
-                         window.shopMarkers = {};
-                         
-                         shops.forEach(shop => {
-                             if (shop.latitude && shop.longitude) {
-                                 const marker = L.marker([shop.latitude, shop.longitude]).addTo(map);
-                                 marker.bindPopup('<div class="p-2"><b>' + shop.name + '</b><br>' + shop.address + '<br>' + (shop.phone ? '📞 ' + shop.phone + '<br>' : '') + '<a href="/shops/' + shop.id + '" class="text-blue-600">View Details</a></div>');
-                                 window.shopMarkers[shop.id] = marker;
-                             }
-                         });
-                         
-                         window.shopMap = map;
-                     }
-                 }"
-                 x-init="initMap()"
-            ></div>
+    <div class="absolute top-4 left-4 z-[400]">
+        <div class="glass-panel px-3 py-1.5 rounded text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2 border border-gt-accent-cyan/30 shadow-[0_0_10px_rgba(0,212,255,0.2)]">
+            <span class="w-2 h-2 rounded-full bg-gt-accent-cyan animate-pulse"></span>
+            Satellite Uplink Active
         </div>
     </div>
-
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 </div>
+
+@assets
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+@endassets
+
+@script
+<script>
+    let map;
+    let markers = {};
+    let activeLayer = null;
+
+    // Initialize map
+    map = L.map('map', {
+        zoomControl: false,
+        attributionControl: false
+    }).setView([{{ $centerLat ?? 14.5995 }}, {{ $centerLng ?? 120.9842 }}], 13);
+    
+    // Dark mode map tiles
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+        subdomains: 'abcd',
+        maxZoom: 20
+    }).addTo(map);
+
+    // Custom controls
+    document.getElementById('map-zoom-in').addEventListener('click', () => map.setZoom(map.getZoom() + 1));
+    document.getElementById('map-zoom-out').addEventListener('click', () => map.setZoom(map.getZoom() - 1));
+
+    // Custom marker icon creation
+    const createMarkerIcon = (isSelected) => {
+        const color = isSelected ? '#ff6b35' : '#706f6c';
+        const size = isSelected ? 32 : 24;
+        const zIndex = isSelected ? 1000 : 1;
+        
+        return L.divIcon({
+            className: 'custom-div-icon',
+            html: `<div class="relative transition-all duration-300 transform hover:scale-110">
+                    <div class="w-${isSelected ? '8' : '6'} h-${isSelected ? '8' : '6'} rounded-full border-2 border-white shadow-lg flex items-center justify-center transition-colors duration-300" style="background-color: ${color}; box-shadow: 0 0 15px ${color}80;">
+                        <div class="w-2 h-2 bg-white rounded-full"></div>
+                    </div>
+                    ${isSelected ? '<div class="absolute -bottom-2 left-1/2 -translate-x-1/2 w-1 h-4 bg-white/50 blur-sm"></div>' : ''}
+                   </div>`,
+            iconSize: [size, size],
+            iconAnchor: [size/2, size/2],
+            zIndexOffset: zIndex
+        });
+    };
+
+    // Update markers function
+    const updateMarkers = (shops, selectedShopId) => {
+        // Clear existing markers
+        Object.values(markers).forEach(marker => map.removeLayer(marker));
+        markers = {};
+
+        shops.forEach(shop => {
+            const isSelected = selectedShopId === shop.id;
+            const marker = L.marker([shop.latitude, shop.longitude], {
+                icon: createMarkerIcon(isSelected),
+                zIndexOffset: isSelected ? 1000 : 0
+            }).addTo(map);
+
+            // GT7 Style Popup
+            const popupContent = `
+                <div class="p-4 min-w-[200px] bg-gt-bg-900 text-white rounded-lg border border-white/10 shadow-xl font-sans">
+                    <h3 class="font-bold text-lg mb-1 italic uppercase tracking-wider text-gt-accent-orange">${shop.name}</h3>
+                    <p class="text-xs text-gt-text-secondary mb-2">${shop.address}</p>
+                    <div class="flex items-center justify-between border-t border-white/10 pt-2 mt-2">
+                        <span class="text-xs font-mono text-gt-accent-cyan">${shop.distance ? shop.distance.toFixed(1) + ' km' : ''}</span>
+                        <button onclick="Livewire.dispatch('selectShop', { shopId: ${shop.id} })" class="text-xs font-bold uppercase tracking-wide hover:text-gt-accent-orange transition-colors">Details &rarr;</button>
+                    </div>
+                </div>
+            `;
+
+            marker.bindPopup(popupContent, {
+                className: 'gt-map-popup',
+                closeButton: false,
+                offset: [0, -10]
+            });
+
+            marker.on('click', () => {
+                Livewire.dispatch('selectShop', { shopId: shop.id });
+            });
+
+            markers[shop.id] = marker;
+
+            if (isSelected) {
+                marker.openPopup();
+                map.flyTo([shop.latitude, shop.longitude], 15, {
+                    animate: true,
+                    duration: 1.5
+                });
+            }
+        });
+    };
+
+    // Listen for Livewire updates
+    $wire.on('shopsUpdated', (data) => {
+        updateMarkers(data.shops, data.selectedShopId);
+    });
+
+    $wire.on('locationUpdated', (data) => {
+        map.flyTo([data.lat, data.lng], 13);
+    });
+
+    // Initial load
+    updateMarkers(@js($shops), @js($selectedShop?->id));
+
+</script>
+
+<style>
+    .gt-map-popup .leaflet-popup-content-wrapper {
+        background: transparent;
+        box-shadow: none;
+        padding: 0;
+    }
+    .gt-map-popup .leaflet-popup-tip {
+        background: #15151e; /* gt-bg-900 */
+        border: 1px solid rgba(255,255,255,0.1);
+    }
+</style>
+@endscript

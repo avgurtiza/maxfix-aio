@@ -12,9 +12,7 @@ use App\Livewire\Vehicles\VehicleForm;
 use App\Livewire\Vehicles\VehicleList;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-})->name('home');
+Route::get('/', \App\Livewire\Home::class)->name('home');
 
 Route::middleware('guest')->group(function () {
     Route::get('/login', Login::class)->name('login');

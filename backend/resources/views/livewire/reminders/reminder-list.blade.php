@@ -12,90 +12,36 @@
                 + Add Reminder
             </a>
         @endif
+            <div>
+                <h1 class="text-3xl font-bold text-white italic tracking-wide uppercase">Pit Strategy</h1>
+                <p class="text-sm text-gt-accent-orange font-bold uppercase tracking-wider">{{ $vehicle->display_name }}</p>
+            </div>
+        </div>
+        <button 
+            wire:click="create" 
+            class="btn-gt-primary px-6 py-2 rounded uppercase tracking-widest font-bold text-sm flex items-center gap-2"
+        >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+            Set Reminder
+        </button>
     </div>
 
     @if(session('message'))
-        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
+        <div class="glass-panel border-l-4 border-l-green-500 text-green-400 px-6 py-4 rounded mb-8 flex items-center shadow-lg">
+            <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
             {{ session('message') }}
         </div>
     @endif
 
-    <div class="mb-4">
-        <select wire:model.live="filter" class="rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-            <option value="all">All Reminders</option>
-            <option value="active">Active Only</option>
-            <option value="due">Due Now</option>
-        </select>
-    </div>
-
-    @php
-        $allReminders = $vehicles->flatMap(fn($v) => $v->reminders);
-    @endphp
-
-    @if($allReminders->isEmpty())
-        <div class="bg-white rounded-lg shadow p-8 text-center">
-            <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-            </svg>
-            <h3 class="mt-2 text-lg font-medium text-gray-900">No reminders</h3>
-            <p class="mt-1 text-gray-500">
-                @if($vehicle)
-                    Create your first maintenance reminder for this vehicle.
-                @else
-                    You don't have any maintenance reminders yet.
-                @endif
-            </p>
+    @if($reminders->isEmpty())
+        <div class="glass-panel rounded-xl p-12 text-center">
+            <div class="w-20 h-20 bg-gt-bg-800 rounded-full flex items-center justify-center mx-auto mb-6 border border-white/10">
+                <svg class="h-10 w-10 text-gt-text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+            </div>
+            <h3 class="text-xl font-bold text-white uppercase tracking-wide">All Systems Clear</h3>
+            <p class="mt-2 text-gt-text-secondary">No maintenance reminders set. Stay ahead of the curve by scheduling one now.</p>
         </div>
     @else
-        <div class="space-y-6">
-            @foreach($vehicles as $v)
-                @if($v->reminders->isNotEmpty())
-                    <div class="bg-white rounded-lg shadow">
-                        <div class="p-4 border-b border-gray-200">
-                            <h2 class="text-lg font-semibold text-gray-900">{{ $v->display_name }}</h2>
-                        </div>
-                        <div class="divide-y divide-gray-200">
-                            @foreach($v->reminders as $reminder)
-                                <div class="p-4 hover:bg-gray-50">
-                                    <div class="flex justify-between items-start">
-                                        <div>
-                                            <div class="flex items-center gap-2">
-                                                <h3 class="font-medium text-gray-900">{{ $reminder->service_name }}</h3>
-                                                @if($reminder->isDue())
-                                                    <span class="bg-red-100 text-red-800 text-xs px-2 py-1 rounded-full">Due</span>
-                                                @elseif($reminder->is_active)
-                                                    <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">Active</span>
-                                                @else
-                                                    <span class="bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded-full">Inactive</span>
-                                                @endif
-                                            </div>
-                                            <div class="mt-1 text-sm text-gray-500 space-y-1">
-                                                @if($reminder->next_due_date)
-                                                    <p>Due date: {{ $reminder->next_due_date->format('M d, Y') }}</p>
-                                                @endif
-                                                @if($reminder->next_due_mileage)
-                                                    <p>Due mileage: {{ number_format($reminder->next_due_mileage) }} km</p>
-                                                @endif
-                                                <p>Type: {{ ucfirst($reminder->reminder_type) }}</p>
-                                            </div>
-                                        </div>
-                                        <div class="flex space-x-2">
-                                            @if($reminder->is_active)
-                                                <button 
-                                                    wire:click="complete({{ $reminder->id }})"
-                                                    class="bg-green-600 text-white px-3 py-1 rounded text-sm hover:bg-green-700"
-                                                >
-                                                    Complete
-                                                </button>
-                                            @endif
-                                            <a 
-                                                href="{{ route('reminders.edit', ['vehicle' => $v, 'reminder' => $reminder]) }}" 
-                                                class="bg-blue-100 text-blue-700 px-3 py-1 rounded text-sm hover:bg-blue-200"
-                                                wire:navigate
-                                            >
-                                                Edit
-                                            </a>
-                                            <button 
                                                 wire:click="delete({{ $reminder->id }})"
                                                 wire:confirm="Are you sure you want to delete this reminder?"
                                                 class="text-red-600 hover:bg-red-100 px-3 py-1 rounded text-sm"

@@ -37,113 +37,116 @@
                     >
                     @error('mileage') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                 </div>
+        <form wire:submit="save" class="glass-panel rounded-xl p-8 relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-gt-accent-orange to-red-600"></div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <!-- Service Details -->
+                <div class="col-span-full">
+                    <h3 class="text-sm font-bold text-gt-text-secondary uppercase tracking-widest mb-4 border-b border-white/10 pb-2">Service Details</h3>
+                </div>
+
                 <div>
-                    <label class="block text-sm font-medium text-gray-700">Cost ($)</label>
-                    <input 
-                        type="number" 
-                        wire:model="cost" 
-                        step="0.01"
-                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                        placeholder="Service cost"
-                    >
-                    @error('cost') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                    <label class="block text-xs font-bold text-gt-text-secondary uppercase tracking-wider mb-2">Service Type</label>
+                    <div class="relative">
+                        <select wire:model="service_type" class="input-gt w-full rounded focus:ring-1 transition-all duration-300 appearance-none">
+                            <option value="">Select Operation</option>
+                            @foreach(['oil_change' => 'Oil Change', 'tire_rotation' => 'Tire Rotation', 'inspection' => 'Inspection', 'repair' => 'Repair', 'maintenance' => 'Maintenance', 'other' => 'Other'] as $value => $label)
+                                <option value="{{ $value }}">{{ $label }}</option>
+                            @endforeach
+                        </select>
+                        <div class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-gt-text-muted">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                        </div>
+                    </div>
+                    @error('service_type') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-gt-text-secondary uppercase tracking-wider mb-2">Date Performed</label>
+                    <input type="date" wire:model="date" class="input-gt w-full rounded focus:ring-1 transition-all duration-300">
+                    @error('date') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
+                </div>
+
+                <div class="col-span-full">
+                    <label class="block text-xs font-bold text-gt-text-secondary uppercase tracking-wider mb-2">Description</label>
+                    <input type="text" wire:model="description" class="input-gt w-full rounded focus:ring-1 transition-all duration-300" placeholder="Brief summary of work performed...">
+                    @error('description') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
                 </div>
             </div>
 
-            <div>
-                <label class="block text-sm font-medium text-gray-700">Service Type *</label>
-                <select 
-                    wire:model="service_type" 
-                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                >
-                    <option value="">Select service type</option>
-                    @foreach($serviceTypes as $value => $label)
-                        <option value="{{ $value }}">{{ $label }}</option>
-                    @endforeach
-                </select>
-                @error('service_type') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <!-- Metrics -->
+                <div class="col-span-full">
+                    <h3 class="text-sm font-bold text-gt-text-secondary uppercase tracking-widest mb-4 border-b border-white/10 pb-2 mt-2">Metrics</h3>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-gt-text-secondary uppercase tracking-wider mb-2">Mileage at Service</label>
+                    <div class="relative">
+                        <input type="number" wire:model="mileage_at_service" class="input-gt w-full rounded focus:ring-1 transition-all duration-300 pl-10 font-mono text-gt-accent-cyan">
+                        <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gt-text-muted text-xs">KM</div>
+                    </div>
+                    @error('mileage_at_service') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-gt-text-secondary uppercase tracking-wider mb-2">Total Cost</label>
+                    <div class="relative">
+                        <input type="number" wire:model="cost" step="0.01" class="input-gt w-full rounded focus:ring-1 transition-all duration-300 pl-8 font-mono text-white">
+                        <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gt-text-muted">$</div>
+                    </div>
+                    @error('cost') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
+                </div>
             </div>
 
-            <div>
-                <label class="block text-sm font-medium text-gray-700">Service Shop</label>
-                <select 
-                    wire:model="shop_id" 
-                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                >
-                    <option value="">Select shop (optional)</option>
-                    @foreach($shops as $shop)
-                        <option value="{{ $shop->id }}">{{ $shop->name }}</option>
-                    @endforeach
-                </select>
-                @error('shop_id') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
-            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <!-- Provider -->
+                <div class="col-span-full">
+                    <h3 class="text-sm font-bold text-gt-text-secondary uppercase tracking-widest mb-4 border-b border-white/10 pb-2 mt-2">Service Provider</h3>
+                </div>
 
-            <div>
-                <label class="block text-sm font-medium text-gray-700">Description</label>
-                <textarea 
-                    wire:model="description" 
-                    rows="4" 
-                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                    placeholder="Describe the work performed..."
-                ></textarea>
-                @error('description') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
-            </div>
-
-            <div>
-                <label class="block text-sm font-medium text-gray-700">Receipt</label>
+                <div class="col-span-full">
+                    <label class="block text-xs font-bold text-gt-text-secondary uppercase tracking-wider mb-2">Shop/Mechanic Name</label>
+                    <input type="text" wire:model="service_provider" class="input-gt w-full rounded focus:ring-1 transition-all duration-300" placeholder="e.g. GT Auto Tuning">
+                    @error('service_provider') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
+                </div>
                 
-                @if($service && $service->hasReceipt())
-                    <div class="mt-2 mb-3 p-3 bg-gray-50 rounded-md">
-                        <div class="flex items-center justify-between">
-                            <a 
-                                href="{{ Storage::disk('public')->url($service->receipt_path) }}" 
-                                target="_blank"
-                                class="text-blue-600 hover:text-blue-800 text-sm flex items-center"
-                            >
-                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/>
-                                </svg>
-                                View Current Receipt
-                            </a>
-                            <label class="flex items-center text-sm text-red-600 cursor-pointer">
-                                <input type="checkbox" wire:model="deleteExistingReceipt" class="mr-2 rounded border-gray-300 text-red-600 focus:ring-red-500">
-                                Delete receipt
-                            </label>
+                <div class="col-span-full">
+                    <label class="block text-xs font-bold text-gt-text-secondary uppercase tracking-wider mb-2">Additional Notes</label>
+                    <textarea wire:model="notes" rows="3" class="input-gt w-full rounded focus:ring-1 transition-all duration-300" placeholder="Technical details, parts used..."></textarea>
+                    @error('notes') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
+                </div>
+
+                <div class="col-span-full">
+                    <div class="flex items-center gap-3 p-4 bg-gt-bg-900/50 rounded border border-white/5">
+                         <div class="flex items-center h-5">
+                            <input id="set_reminder" wire:model="set_next_service_reminder" type="checkbox" class="rounded bg-gt-bg-800 border-gt-bg-700 text-gt-accent-cyan focus:ring-gt-accent-cyan/50">
+                        </div>
+                        <div class="ml-2 text-sm">
+                            <label for="set_reminder" class="font-bold text-white uppercase tracking-wide">Schedule Next Service</label>
+                            <p class="text-xs text-gt-text-muted">Automatically create a reminder for the next interval</p>
                         </div>
                     </div>
-                @endif
+                </div>
 
-                <input 
-                    type="file" 
-                    wire:model="receipt" 
-                    accept=".pdf,.jpg,.jpeg,.png"
-                    class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-                >
-                <p class="mt-1 text-sm text-gray-500">Accepted: PDF, JPG, PNG (max 10MB)</p>
-                @error('receipt') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
-
-                @if($receipt)
-                    <div class="mt-2 text-sm text-green-600">
-                        File selected: {{ $receipt->getClientOriginalName() }}
+                @if($set_next_service_reminder)
+                    <div>
+                        <label class="block text-xs font-bold text-gt-text-secondary uppercase tracking-wider mb-2">Next Service Date</label>
+                        <input type="date" wire:model="next_service_date" class="input-gt w-full rounded focus:ring-1 transition-all duration-300">
+                    </div>
+                    <div>
+                         <label class="block text-xs font-bold text-gt-text-secondary uppercase tracking-wider mb-2">Next Service Mileage (km)</label>
+                        <input type="number" wire:model="next_service_mileage" class="input-gt w-full rounded focus:ring-1 transition-all duration-300 font-mono">
                     </div>
                 @endif
             </div>
 
-            <div class="flex justify-end space-x-4 pt-4">
-                <a 
-                    href="{{ route('services.history', $vehicle) }}" 
-                    class="bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-300"
-                    wire:navigate
-                >
-                    Cancel
-                </a>
-                <button 
-                    type="submit" 
-                    class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
-                    wire:loading.attr="disabled"
-                >
-                    <span wire:loading.remove>{{ $service ? 'Update Record' : 'Create Record' }}</span>
-                    <span wire:loading>Saving...</span>
+            <div class="flex justify-end space-x-4 pt-6 border-t border-white/5">
+                <a href="{{ route('services.history', $vehicle) }}" class="px-6 py-2 rounded text-sm font-bold text-gt-text-muted hover:text-white uppercase tracking-wider transition-colors" wire:navigate>Cancel</a>
+                <button type="submit" class="btn-gt-primary px-8 py-2 rounded uppercase tracking-widest font-bold text-sm" wire:loading.attr="disabled">
+                    <span wire:loading.remove>{{ $service ? 'Update Record' : 'Log Service' }}</span>
+                    <span wire:loading>Processing...</span>
                 </button>
             </div>
         </form>
