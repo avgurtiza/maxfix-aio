@@ -1,0 +1,27 @@
+# Docker
+.git
+.gitignore
+.env
+.env.*
+docker-compose.yml
+docker/
+*.md
+
+# Backend
+backend/vendor/
+backend/node_modules/
+backend/storage/
+backend/bootstrap/cache/
+backend/.env
+backend/.env.*
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
