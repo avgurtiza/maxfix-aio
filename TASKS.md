@@ -98,7 +98,7 @@
 
 ---
 
-## Phase 4: Service History (Week 6-7)
+## Phase 4: Service History (Week 6-7) ✅
 
 ### Backend Models
 - [x] Create `ServiceRecord` model
@@ -106,24 +106,24 @@
 - [x] Add service type enum
 
 ### API Endpoints
-- [ ] `GET /api/vehicles/{uuid}/services` - Service history
-- [ ] `POST /api/vehicles/{uuid}/services` - Log new service
-- [ ] `GET /api/services/{id}` - Service details
-- [ ] `PUT /api/services/{id}` - Update service
-- [ ] `DELETE /api/services/{id}` - Delete service
+- [x] `GET /api/vehicles/{uuid}/services` - Service history
+- [x] `POST /api/vehicles/{uuid}/services` - Log new service
+- [x] `GET /api/services/{id}` - Service details
+- [x] `PUT /api/services/{id}` - Update service
+- [x] `DELETE /api/services/{id}` - Delete service
 
 ### Livewire Components
-- [ ] Create `Services/ServiceHistory` component
-- [ ] Create `Services/ServiceForm` component
-- [ ] Create `Services/ReceiptUpload` component
-- [ ] Create service timeline view
-- [ ] Create log service form view
-- [ ] Add receipt preview functionality
+- [x] Create `Services/ServiceHistory` component
+- [x] Create `Services/ServiceForm` component
+- [x] Create `Services/ReceiptUpload` component (integrated in ServiceForm)
+- [x] Create service timeline view
+- [x] Create log service form view
+- [x] Add receipt preview functionality
 
 ### File Storage
-- [ ] Configure Laravel storage for receipts
-- [ ] Implement file upload handling
-- [ ] Add file validation (size, type)
+- [x] Configure Laravel storage for receipts
+- [x] Implement file upload handling
+- [x] Add file validation (size, type)
 - [ ] Create storage symlink
 
 ### Testing
@@ -134,7 +134,7 @@
 
 ---
 
-## Phase 5: Maintenance Reminders (Week 8)
+## Phase 5: Maintenance Reminders (Week 8) ✅
 
 ### Backend Models
 - [x] Create `MaintenanceReminder` model
@@ -142,25 +142,25 @@
 - [x] Define reminder relationships
 
 ### API Endpoints
-- [ ] `GET /api/vehicles/{uuid}/reminders` - List reminders
-- [ ] `POST /api/vehicles/{uuid}/reminders` - Create reminder
-- [ ] `PUT /api/reminders/{id}` - Update reminder
-- [ ] `POST /api/reminders/{id}/complete` - Mark complete
-- [ ] `DELETE /api/reminders/{id}` - Delete reminder
+- [x] `GET /api/vehicles/{uuid}/reminders` - List reminders
+- [x] `POST /api/vehicles/{uuid}/reminders` - Create reminder
+- [x] `PUT /api/reminders/{id}` - Update reminder
+- [x] `POST /api/reminders/{id}/complete` - Mark complete
+- [x] `DELETE /api/reminders/{id}` - Delete reminder
 
 ### Livewire Components
-- [ ] Create `Reminders/ReminderList` component
-- [ ] Create `Reminders/ReminderForm` component
+- [x] Create `Reminders/ReminderList` component
+- [x] Create `Reminders/ReminderForm` component
 - [ ] Create `Reminders/ReminderNotifications` component
-- [ ] Create reminder dashboard view
-- [ ] Create add/edit reminder form view
+- [x] Create reminder dashboard view
+- [x] Create add/edit reminder form view
 
 ### Notifications
-- [ ] Create `MaintenanceReminderNotification` class
-- [ ] Configure Mailpit for development
-- [ ] Create email notification template
-- [ ] Create scheduled command for reminders
-- [ ] Add command to scheduler
+- [x] Create `MaintenanceReminderNotification` class
+- [x] Configure Mailpit for development
+- [x] Create email notification template
+- [x] Create scheduled command for reminders
+- [x] Add command to scheduler
 
 ### Testing
 - [ ] Write unit tests for MaintenanceReminder model
@@ -171,7 +171,7 @@
 
 ---
 
-## Phase 6: Service Shop Lookup (Week 9)
+## Phase 6: Service Shop Lookup (Week 9) ✅
 
 ### Backend Models
 - [x] Create `ServiceShop` model
@@ -179,24 +179,24 @@
 - [x] Define shop relationships
 
 ### API Endpoints
-- [ ] `GET /api/shops` - Search shops with geo filters
-- [ ] `GET /api/shops/{id}` - Shop details
-- [ ] `POST /api/shops/{id}/favorite` - Add to favorites
-- [ ] `DELETE /api/shops/{id}/favorite` - Remove favorite
+- [x] `GET /api/shops` - Search shops with geo filters
+- [x] `GET /api/shops/{id}` - Shop details
+- [x] `POST /api/shops/{id}/favorite` - Add to favorites
+- [x] `DELETE /api/shops/{id}/favorite` - Remove favorite
 
 ### Livewire Components
-- [ ] Create `Shops/ShopSearch` component
+- [x] Create `Shops/ShopSearch` component
 - [ ] Create `Shops/ShopMap` component (Leaflet.js)
-- [ ] Create `Shops/ShopDetails` component
-- [ ] Create shop search view
+- [x] Create `Shops/ShopDetails` component
+- [x] Create shop search view
 - [ ] Create shop map view
-- [ ] Create shop detail modal
+- [x] Create shop detail modal
 
 ### Services
-- [ ] Implement distance calculation logic
-- [ ] Create shop search filters
+- [x] Implement distance calculation logic
+- [x] Create shop search filters
 - [ ] Add geolocation support
-- [ ] Create shop database seeder
+- [x] Create shop database seeder
 
 ### Testing
 - [ ] Write unit tests for ServiceShop model
