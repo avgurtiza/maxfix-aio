@@ -29,7 +29,7 @@
 - [x] Create `maintenance_reminders` table migration
 - [x] Create `service_shops` table migration
 - [x] Create `user_favorites` table migration
-- [ ] Create database seeders for testing
+- [x] Create database seeders for testing
 
 ---
 
@@ -124,7 +124,7 @@
 - [x] Configure Laravel storage for receipts
 - [x] Implement file upload handling
 - [x] Add file validation (size, type)
-- [ ] Create storage symlink
+- [x] Create storage symlink
 
 ### Testing
 - [ ] Write unit tests for ServiceRecord model
@@ -151,7 +151,7 @@
 ### Livewire Components
 - [x] Create `Reminders/ReminderList` component
 - [x] Create `Reminders/ReminderForm` component
-- [ ] Create `Reminders/ReminderNotifications` component
+- [x] Create `Reminders/ReminderNotifications` component
 - [x] Create reminder dashboard view
 - [x] Create add/edit reminder form view
 
@@ -186,16 +186,16 @@
 
 ### Livewire Components
 - [x] Create `Shops/ShopSearch` component
-- [ ] Create `Shops/ShopMap` component (Leaflet.js)
+- [x] Create `Shops/ShopMap` component (Leaflet.js)
 - [x] Create `Shops/ShopDetails` component
 - [x] Create shop search view
-- [ ] Create shop map view
+- [x] Create shop map view
 - [x] Create shop detail modal
 
 ### Services
 - [x] Implement distance calculation logic
 - [x] Create shop search filters
-- [ ] Add geolocation support
+- [x] Add geolocation support
 - [x] Create shop database seeder
 
 ### Testing

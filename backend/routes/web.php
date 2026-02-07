@@ -6,6 +6,7 @@ use App\Livewire\Reminders\ReminderForm;
 use App\Livewire\Reminders\ReminderList;
 use App\Livewire\Services\ServiceForm;
 use App\Livewire\Services\ServiceHistory;
+use App\Livewire\Shops\ShopMap;
 use App\Livewire\Shops\ShopSearch;
 use App\Livewire\Vehicles\VehicleForm;
 use App\Livewire\Vehicles\VehicleList;
@@ -34,4 +35,5 @@ Route::middleware('auth')->group(function () {
     Route::get('/reminders/{reminder}/edit', ReminderForm::class)->name('reminders.edit');
 
     Route::get('/shops', ShopSearch::class)->name('shops.index');
+    Route::get('/shops/map', ShopMap::class)->name('shops.map');
 });

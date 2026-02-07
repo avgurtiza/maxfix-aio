@@ -18,6 +18,8 @@
                 @auth
                     <div class="flex items-center space-x-4">
                         <a href="{{ route('vehicles.index') }}" class="text-gray-700 hover:text-blue-600">My Vehicles</a>
+                        <a href="{{ route('shops.index') }}" class="text-gray-700 hover:text-blue-600">Find Shops</a>
+                        <livewire:reminders.reminder-notifications />
                         <livewire:auth.logout />
                     </div>
                 @else
