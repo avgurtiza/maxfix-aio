@@ -1,0 +1,6 @@
+{
+    "require": {
+        "laravel/sanctum": "^4.3",
+        "livewire/livewire": "^4.1"
+    }
+}
