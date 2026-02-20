@@ -1,0 +1,12 @@
+<?php
+
+namespace App\Filament\Resources\ServiceRecordResource\Pages;
+
+use App\Filament\Resources\ServiceRecordResource;
+use Filament\Actions;
+use Filament\Resources\Pages\CreateRecord;
+
+class CreateServiceRecord extends CreateRecord
+{
+    protected static string $resource = ServiceRecordResource::class;
+}

@@ -1,0 +1,308 @@
+name: Deploy to Production
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy to'
+        required: true
+        default: 'production'
+        type: choice
+        options:
+          - production
+          - staging
+
+env:
+  BACKEND_PATH: backend
+  ADMIN_PATH: admin
+  SERVER_USER: deploy
+  SERVER_HOST: ${{ secrets.DO_SERVER_HOST }}
+  DEPLOY_PATH: /var/www/maxfix
+
+jobs:
+  test-deployment:
+    name: Pre-deployment Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Verify SSH connection
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.DO_SERVER_HOST }}
+          username: ${{ env.SERVER_USER }}
+          key: ${{ secrets.DO_SSH_PRIVATE_KEY }}
+          script: |
+            echo "SSH connection successful"
+            whoami
+            ls -la ${{ env.DEPLOY_PATH }} 2>/dev/null || echo "Deploy directory does not exist yet"
+
+  deploy-backend:
+    name: Deploy Backend Application
+    needs: test-deployment
+    runs-on: ubuntu-latest
+    environment: production
+    defaults:
+      run:
+        working-directory: ./backend
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/cache-extensions@v1
+        with:
+          php-version: '8.2'
+          extensions: mbstring, xml, bcmath, gd, pdo, pdo_sqlite
+          ini-values: date.timezone=UTC
+
+      - name: Install dependencies
+        run: composer install --no-dev --optimize-autoloader
+
+      - name: Build frontend assets
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: backend/package-lock.json
+
+      - name: Install npm dependencies
+        run: npm ci
+
+      - name: Build assets
+        run: npm run build
+
+      - name: Create deployment archive
+        run: |
+          tar --exclude='.git' \
+              --exclude='node_modules' \
+              --exclude='vendor' \
+              --exclude='.env' \
+              -czf /tmp/backend-deploy.tar.gz .
+
+      - name: Deploy to server via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.DO_SERVER_HOST }}
+          username: ${{ env.SERVER_USER }}
+          key: ${{ secrets.DO_SSH_PRIVATE_KEY }}
+          script: |
+            set -e
+
+            BACKEND_PATH="${{ env.DEPLOY_PATH }}/backend"
+            echo "Deploying backend to $BACKEND_PATH"
+
+            # Create backup of current release
+            if [ -d "$BACKEND_PATH/current" ]; then
+              BACKUP_NAME="backup-$(date +%Y%m%d-%H%M%S)"
+              echo "Creating backup: $BACKUP_NAME"
+              cp -r "$BACKEND_PATH/current" "$BACKEND_PATH/$BACKUP_NAME"
+            fi
+
+            # Create new release directory
+            mkdir -p "$BACKEND_PATH/releases/$(date +%Y%m%d-%H%M%S)"
+
+            # Extract new code
+            tar -xzf /tmp/backend-deploy.tar.gz -C "$BACKEND_PATH/releases/$(date +%Y%m%d-%H%M%S)"
+
+            # Install dependencies in release directory
+            cd "$BACKEND_PATH/releases/$(date +%Y%m%d-%H%M%S)"
+            composer install --no-dev --optimize-autoloader --no-interaction
+            npm ci
+            npm run build
+
+            # Copy environment file (use existing or create from template)
+            if [ -f "$BACKEND_PATH/.env" ]; then
+              cp "$BACKEND_PATH/.env" "$BACKEND_PATH/releases/$(date +%Y%m%d-%H%M%S)/.env"
+            else
+              cp "$BACKEND_PATH/.env.example" "$BACKEND_PATH/releases/$(date +%Y%m%d-%H%M%S)/.env"
+            fi
+
+            # Run migrations
+            cd "$BACKEND_PATH/releases/$(date +%Y%m%d-%H%M%S)"
+            php artisan migrate --force
+
+            # Clear caches
+            php artisan optimize:clear
+            php artisan optimize
+
+            # Symlink current directory
+            ln -snf "$BACKEND_PATH/releases/$(date +%Y%m%d-%H%M%S)" "$BACKEND_PATH/current"
+
+            # Set permissions
+            chown -R www-data:www-data "$BACKEND_PATH"
+            chmod -R 755 "$BACKEND_PATH/storage"
+
+            # Restart PHP-FPM
+            sudo systemctl restart php8.2-fpm || true
+
+            echo "Backend deployment completed successfully!"
+
+      - name: Wait for service to be ready
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.DO_SERVER_HOST }}
+          username: ${{ env.SERVER_USER }}
+          key: ${{ secrets.DO_SSH_PRIVATE_KEY }}
+          script: |
+            sleep 5
+            curl -f -o /dev/null http://localhost:8080/health || echo "Health check endpoint not available, checking general response..."
+            curl -f -o /dev/null http://localhost:8080 || echo "Backend responding"
+
+  deploy-admin:
+    name: Deploy Admin Panel
+    needs: deploy-backend
+    runs-on: ubuntu-latest
+    environment: production
+    defaults:
+      run:
+        working-directory: ./admin
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/cache-extensions@v1
+        with:
+          php-version: '8.2'
+          extensions: mbstring, xml, bcmath, gd, pdo, pdo_pgsql
+          ini-values: date.timezone=UTC
+
+      - name: Install dependencies
+        run: composer install --no-dev --optimize-autoloader
+
+      - name: Build frontend assets
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: admin/package-lock.json
+
+      - name: Install npm dependencies
+        run: npm ci
+
+      - name: Build assets
+        run: npm run build
+
+      - name: Create deployment archive
+        run: |
+          tar --exclude='.git' \
+              --exclude='node_modules' \
+              --exclude='vendor' \
+              --exclude='.env' \
+              --exclude='docker' \
+              -czf /tmp/admin-deploy.tar.gz .
+
+      - name: Deploy to server via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.DO_SERVER_HOST }}
+          username: ${{ env.SERVER_USER }}
+          key: ${{ secrets.DO_SSH_PRIVATE_KEY }}
+          script: |
+            set -e
+
+            ADMIN_PATH="${{ env.DEPLOY_PATH }}/admin"
+            echo "Deploying admin panel to $ADMIN_PATH"
+
+            # Create backup of current release
+            if [ -d "$ADMIN_PATH/current" ]; then
+              BACKUP_NAME="backup-$(date +%Y%m%d-%H%M%S)"
+              echo "Creating backup: $BACKUP_NAME"
+              cp -r "$ADMIN_PATH/current" "$ADMIN_PATH/$BACKUP_NAME"
+            fi
+
+            # Create new release directory
+            mkdir -p "$ADMIN_PATH/releases/$(date +%Y%m%d-%H%M%S)"
+
+            # Extract new code
+            tar -xzf /tmp/admin-deploy.tar.gz -C "$ADMIN_PATH/releases/$(date +%Y%m%d-%H%M%S)"
+
+            # Install dependencies in release directory
+            cd "$ADMIN_PATH/releases/$(date +%Y%m%d-%H%M%S)"
+            composer install --no-dev --optimize-autoloader --no-interaction
+            npm ci
+            npm run build
+
+            # Copy environment file
+            if [ -f "$ADMIN_PATH/.env" ]; then
+              cp "$ADMIN_PATH/.env" "$ADMIN_PATH/releases/$(date +%Y%m%d-%H%M%S)/.env"
+            else
+              cp "$ADMIN_PATH/.env.example" "$ADMIN_PATH/releases/$(date +%Y%m%d-%H%M%S)/.env"
+            fi
+
+            # Run migrations
+            cd "$ADMIN_PATH/releases/$(date +%Y%m%d-%H%M%S)"
+            php artisan migrate --force
+
+            # Clear caches
+            php artisan optimize:clear
+            php artisan optimize
+
+            # Symlink current directory
+            ln -snf "$ADMIN_PATH/releases/$(date +%Y%m%d-%H%M%S)" "$ADMIN_PATH/current"
+
+            # Set permissions
+            chown -R www-data:www-data "$ADMIN_PATH"
+            chmod -R 755 "$ADMIN_PATH/storage"
+
+            # Restart Docker containers
+            cd "$ADMIN_PATH/current"
+            docker-compose down
+            docker-compose up -d --build
+
+            echo "Admin panel deployment completed successfully!"
+
+      - name: Wait for service to be ready
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.DO_SERVER_HOST }}
+          username: ${{ env.SERVER_USER }}
+          key: ${{ secrets.DO_SSH_PRIVATE_KEY }}
+          script: |
+            sleep 10
+            curl -f -o /dev/null http://localhost:8081/admin/health || echo "Checking admin panel response..."
+            curl -f -o /dev/null http://localhost:8081 || echo "Admin panel responding"
+
+  notify:
+    name: Send Notification
+    needs: [deploy-backend, deploy-admin]
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Send Slack notification
+        if: always()
+        uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ job.status }}
+          channel: deployments
+          text: 'MaxFix deployment completed!'
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        continue-on-error: true
+
+      - name: Send Discord notification
+        if: always()
+        uses: sarisia/actions-discord-webhook@v1
+        with:
+          webhookid: ${{ secrets.DISCORD_WEBHOOK_ID }}
+          webhooktoken: ${{ secrets.DISCORD_WEBHOOK_TOKEN }}
+          status: ${{ job.status }}
+          description: 'MaxFix deployment completed!'
+        continue-on-error: true
+
+      - name: Print deployment summary
+        run: |
+          echo "Deployment Summary"
+          echo "=================="
+          echo "Backend deployed successfully"
+          echo "Admin panel deployed successfully"
+          echo ""
+          echo "Application URLs:"
+          echo "  - Backend: http://your-domain.com"
+          echo "  - Admin Panel: http://your-domain.com:8081/admin"

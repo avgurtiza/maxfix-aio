@@ -10,16 +10,29 @@ RUN apk add --no-cache \
     zip \
     unzip \
     sqlite \
-    sqlite-dev
+    sqlite-dev \
+    postgresql-dev \
+    icu-dev \
+    libzip-dev \
+    nodejs \
+    npm
 
 # Install PHP extensions
 RUN docker-php-ext-install \
     pdo_sqlite \
+    pdo_pgsql \
+    intl \
     mbstring \
     exif \
     pcntl \
     bcmath \
-    gd
+    gd \
+    zip
+
+# Install Bun
+RUN curl -fsSL https://bun.sh/install | bash
+ENV BUN_INSTALL=/root/.bun
+ENV PATH=$BUN_INSTALL/bin:$PATH
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
@@ -30,6 +43,12 @@ WORKDIR /var/www/html
 # Create Laravel user
 RUN addgroup -g 1000 laravel && \
     adduser -D -u 1000 -G laravel laravel
+
+# Install PHP dependencies
+RUN composer install --no-dev --optimize-autoloader --no-interaction
+
+# Install JS dependencies and build assets
+RUN if [ -f package.json ]; then bun install && bun run build; fi
 
 # Change ownership
 RUN chown -R laravel:laravel /var/www/html

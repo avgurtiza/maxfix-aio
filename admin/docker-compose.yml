@@ -1,0 +1,57 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: maxfix-admin-app
+    restart: unless-stopped
+    working_dir: /var/www/html
+    volumes:
+      - ./:/var/www/html
+    networks:
+      - maxfix-admin-network
+    depends_on:
+      - postgres
+    environment:
+      DB_CONNECTION: pgsql
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_DATABASE: maxfix_admin
+      DB_USERNAME: maxfix_user
+      DB_PASSWORD: maxfix_password
+
+  nginx:
+    image: nginx:alpine
+    container_name: maxfix-admin-nginx
+    restart: unless-stopped
+    ports:
+      - "8081:80"
+    volumes:
+      - ./:/var/www/html
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    networks:
+      - maxfix-admin-network
+    depends_on:
+      - app
+
+  postgres:
+    image: postgres:15-alpine
+    container_name: maxfix-admin-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: maxfix_admin
+      POSTGRES_USER: maxfix_user
+      POSTGRES_PASSWORD: maxfix_password
+    volumes:
+      - maxfix-admin-postgres-data:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+    networks:
+      - maxfix-admin-network
+
+networks:
+  maxfix-admin-network:
+    driver: bridge
+
+volumes:
+  maxfix-admin-postgres-data:

@@ -9,11 +9,21 @@ docker/
 
 # Backend
 backend/vendor/
-backend/node_modules/
 backend/storage/
 backend/bootstrap/cache/
 backend/.env
 backend/.env.*
+backend/public/build/
+backend/public/hot
+
+# Admin
+admin/vendor/
+admin/storage/
+admin/bootstrap/cache/
+admin/.env
+admin/.env.*
+admin/public/build/
+admin/public/hot
 
 # IDE
 .idea/
