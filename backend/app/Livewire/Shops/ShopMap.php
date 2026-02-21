@@ -4,9 +4,11 @@ namespace App\Livewire\Shops;
 
 use App\Models\ServiceShop;
 use Illuminate\Support\Facades\Auth;
+use Livewire\Attributes\Layout;
 use Livewire\Attributes\Url;
 use Livewire\Component;
 
+#[Layout('components.layouts.app')]
 class ShopMap extends Component
 {
     #[Url]

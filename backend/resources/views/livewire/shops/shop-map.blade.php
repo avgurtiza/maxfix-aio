@@ -1,6 +1,7 @@
 <div 
     id="map" 
-    class="w-full h-full bg-gt-bg-900 relative" 
+    class="w-full bg-gt-bg-900 relative rounded-xl overflow-hidden" 
+    style="height: calc(100vh - 180px); min-height: 500px;"
     wire:ignore
 >
     <!-- Custom Map Controls Overlay -->
@@ -42,7 +43,7 @@
     map = L.map('map', {
         zoomControl: false,
         attributionControl: false
-    }).setView([{{ $centerLat ?? 14.5995 }}, {{ $centerLng ?? 120.9842 }}], 13);
+    }).setView([{{ $this->mapCenterLat }}, {{ $this->mapCenterLng }}], {{ $this->mapZoom }});
     
     // Dark mode map tiles
     L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
@@ -132,7 +133,7 @@
     });
 
     // Initial load
-    updateMarkers(@js($shops), @js($selectedShop?->id));
+    updateMarkers(@js($this->shops), null);
 
 </script>
 

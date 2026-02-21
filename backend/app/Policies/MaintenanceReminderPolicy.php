@@ -5,7 +5,7 @@ namespace App\Policies;
 use App\Models\MaintenanceReminder;
 use App\Models\User;
 
-class ReminderPolicy
+class MaintenanceReminderPolicy
 {
     public function view(User $user, MaintenanceReminder $reminder): bool
     {

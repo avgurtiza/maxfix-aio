@@ -36,6 +36,10 @@ class ServiceForm extends Component
     public $receipt;
 
     public bool $deleteExistingReceipt = false;
+    public bool $set_next_service_reminder = false;
+    public string $next_service_date = '';
+    public ?int $next_service_mileage = null;
+
 
     protected function rules(): array
     {

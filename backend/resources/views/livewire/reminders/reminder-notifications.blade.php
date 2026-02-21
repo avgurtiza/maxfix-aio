@@ -59,8 +59,8 @@
             </div>
             <div class="p-3 bg-white/5 border-t border-white/5 text-center">
                 {{-- Updated route to point to reminder list --}}
-                <a href="{{ route('reminders.index', ['filter' => 'all']) }}" class="text-xs font-bold text-gt-accent-cyan hover:text-white uppercase tracking-wider transition-colors">
-                    View All Reminders
+                <a href="{{ route('vehicles.index') }}" class="text-xs font-bold text-gt-accent-cyan hover:text-white uppercase tracking-wider transition-colors">
+                    View Garage
                 </a>
             </div>
         @else

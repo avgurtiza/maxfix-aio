@@ -94,7 +94,7 @@ class ReminderForm extends Component
             session()->flash('message', 'Reminder created successfully!');
         }
 
-        return $this->redirect(route('vehicles.show', $this->vehicle), navigate: true);
+        return $this->redirect(route('vehicles.index'), navigate: true);
     }
 
     public function render()

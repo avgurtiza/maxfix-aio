@@ -60,6 +60,21 @@ class MaintenanceReminder extends Model
 
     public function isDue(): bool
     {
+        return $this->isDue;
+    }
+
+    public function isDateDue(): bool
+    {
+        return $this->next_due_date && $this->next_due_date->isPast();
+    }
+
+    public function isMileageDue(): bool
+    {
+        return $this->next_due_mileage && $this->vehicle && $this->vehicle->current_mileage >= $this->next_due_mileage;
+    }
+
+    public function getIsDueAttribute(): bool
+    {
         if ($this->next_due_date && $this->next_due_date->isPast()) {
             return true;
         }

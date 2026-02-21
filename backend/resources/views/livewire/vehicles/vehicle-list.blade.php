@@ -39,7 +39,7 @@
             @foreach($vehicles as $vehicle)
                 <div class="glass-card rounded-xl overflow-hidden group relative">
                     <div class="absolute top-0 right-0 p-4">
-                        @if($vehicle->activeReminders->where('isDue')->count() > 0)
+                        @if($vehicle->activeReminders->filter->isDue->count() > 0)
                             <span class="bg-red-600/90 text-white text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider shadow-[0_0_10px_rgba(220,38,38,0.5)] animate-pulse">
                                 Maintenance Due
                             </span>
@@ -79,6 +79,13 @@
                                 wire:navigate
                             >
                                 History
+                            </a>
+                            <a 
+                                href="{{ route('reminders.index', $vehicle) }}" 
+                                class="flex-1 text-center btn-gt-secondary py-2 rounded text-xs font-bold uppercase tracking-wider"
+                                wire:navigate
+                            >
+                                Pit Strategy
                             </a>
                             <a 
                                 href="{{ route('vehicles.edit', $vehicle) }}" 
