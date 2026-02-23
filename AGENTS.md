@@ -1,15 +1,15 @@
 # AGENTS.md - Coding Guidelines for max-fix
 
 ## Project Overview
-Laravel 12 application with PHP 8.2+ backend, Filament v3 admin panel, and Vite/TailwindCSS frontend.
+Laravel 12 application with PHP 8.2+, Filament v3 admin panel, and Vite/TailwindCSS frontend.
 
 ### Architecture
-- **backend/** - Main application (Livewire SPA)
+- **app/** - Main application (Livewire SPA)
 - **admin/** - Filament admin panel (separate Laravel installation)
 
 ## Build/Lint/Test Commands
 
-### Backend (run from `backend/` directory)
+### App (run from `app/` directory)
 ```bash
 # Install dependencies
 composer install
@@ -33,16 +33,16 @@ php artisan test --coverage
 ./vendor/bin/pint --test        # Check without fixing
 ```
 
-### Frontend (run from `backend/` directory)
+### Frontend (run from `app/` directory)
 ```bash
 # Install dependencies
-npm install
+bun install
 
 # Development build with hot reload
-npm run dev
+bun run dev
 
 # Production build
-npm run build
+bun run build
 ```
 
 ### Full Development
@@ -186,7 +186,7 @@ public function test_user_can_create_post(): void
 ## Project Structure
 
 ```
-backend/
+app/
 ├── app/              # Application code
 │   ├── Http/         # Controllers, Middleware, Requests
 │   ├── Models/       # Eloquent models
@@ -226,7 +226,7 @@ admin/
 
 ## Environment
 
-### Backend
+### App
 - Copy `.env.example` to `.env`
 - Generate app key: `php artisan key:generate`
 - Database defaults to SQLite
