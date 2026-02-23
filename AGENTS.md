@@ -4,7 +4,7 @@
 Laravel 12 application with PHP 8.2+, Filament v3 admin panel, and Vite/TailwindCSS frontend.
 
 ### Architecture
-- **app/** - Main application (Livewire SPA)
+- **app/src/** - Main application (Livewire SPA)
 - **admin/** - Filament admin panel (separate Laravel installation)
 
 ## Build/Lint/Test Commands
@@ -187,20 +187,29 @@ public function test_user_can_create_post(): void
 
 ```
 app/
-├── app/              # Application code
-│   ├── Http/         # Controllers, Middleware, Requests
-│   ├── Models/       # Eloquent models
-│   ├── Livewire/     # Livewire components
-│   ├── Notifications/ # Notification classes
-│   ├── Policies/     # Authorization policies
-│   ├── Providers/    # Service providers
-│   └── Services/     # Business logic services
-├── config/           # Configuration files
-├── database/         # Migrations, factories, seeders
-├── resources/        # Views, CSS, JS
-├── routes/           # Route definitions
-├── tests/            # Test files
-└── .env.example      # Environment template
+├── src/                 # Main application (Laravel)
+│   ├── app/              # Application code
+│   │   ├── Http/         # Controllers, Middleware, Requests
+│   │   ├── Models/       # Eloquent models
+│   │   ├── Livewire/     # Livewire components
+│   │   ├── Notifications/ # Notification classes
+│   │   ├── Policies/     # Authorization policies
+│   │   ├── Providers/    # Service providers
+│   │   └── Services/     # Business logic services
+│   ├── config/           # Configuration files
+│   ├── database/         # Migrations, factories, seeders
+│   ├── resources/        # Views, CSS, JS
+│   ├── routes/           # Route definitions
+│   ├── tests/            # Test files
+│   └── .env.example      # Environment template
+├── bootstrap/            # Bootstrap files
+├── public/               # Public entry points
+├── storage/              # Storage directories
+├── vendor/               # Composer dependencies
+├── artisan              # Artisan CLI
+├── composer.json
+├── package.json
+└── vite.config.js
 
 admin/
 ├── app/
@@ -227,7 +236,7 @@ admin/
 ## Environment
 
 ### App
-- Copy `.env.example` to `.env`
+- Copy `.env.example` to `.env` (in `app/src/`)
 - Generate app key: `php artisan key:generate`
 - Database defaults to SQLite
 - Run migrations: `php artisan migrate`
