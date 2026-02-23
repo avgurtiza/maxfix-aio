@@ -1,0 +1,60 @@
+@import 'tailwindcss';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source '../**/*.blade.php';
+@source '../**/*.js';
+
+@theme {
+    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+        'Segoe UI Symbol', 'Noto Color Emoji';
+
+    --color-gt-bg-950: #0a0a0f;
+    --color-gt-bg-900: #15151e;
+    --color-gt-bg-800: #1a1a26;
+    --color-gt-bg-700: #2a2a35;
+    --color-gt-bg-600: #3a3a45;
+
+    --color-gt-accent-orange: #ff6b35;
+    --color-gt-accent-amber: #f5a623;
+    --color-gt-accent-cyan: #00d4ff;
+
+    --color-gt-text-primary: #ededec;
+    --color-gt-text-secondary: #a1a09a;
+    --color-gt-text-muted: #706f6c;
+
+    --shadow-gt-glass: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    --shadow-gt-glow-orange: 0 0 15px rgba(255, 107, 53, 0.3);
+    --shadow-gt-glow-cyan: 0 0 10px rgba(0, 212, 255, 0.3);
+}
+
+/* Custom Utilities */
+@layer utilities {
+    .glass-panel {
+        @apply bg-gt-bg-900/80 backdrop-blur-md border border-white/5 shadow-gt-glass;
+    }
+
+    .glass-card {
+        @apply bg-gt-bg-800/60 backdrop-blur-sm border border-white/5 hover:border-gt-accent-orange/30 transition-all duration-300;
+    }
+
+    .btn-gt-primary {
+        @apply bg-gradient-to-r from-gt-accent-orange to-red-600 text-white font-medium shadow-lg hover:shadow-gt-glow-orange transform hover:-translate-y-0.5 transition-all duration-300;
+    }
+
+    .btn-gt-secondary {
+        @apply bg-gt-bg-700 text-gt-text-primary border border-white/10 hover:bg-gt-bg-600 hover:border-white/20 transition-all duration-300;
+    }
+
+    .input-gt {
+        @apply bg-gt-bg-950 border-gt-bg-700 text-gt-text-primary focus:border-gt-accent-cyan focus:ring-gt-accent-cyan/20 placeholder:text-gt-text-muted;
+    }
+
+    .text-gradient-gt {
+        @apply bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400;
+    }
+
+    .racing-stripe {
+        @apply h-1 w-full bg-gradient-to-r from-gt-accent-orange via-gt-accent-amber to-transparent opacity-80;
+    }
+}
