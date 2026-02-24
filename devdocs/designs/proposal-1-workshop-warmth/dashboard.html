@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MaxFix - Workshop Warmth - Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'warm': {
+                            'bg-primary': '#FAFAF8',
+                            'bg-secondary': '#F5F3EF',
+                            'card': '#FFFFFF',
+                            'text-primary': '#2D2A26',
+                            'text-secondary': '#6B6560',
+                            'accent-amber': '#D97706',
+                            'accent-green': '#059669',
+                            'accent-blue': '#2563EB',
+                            'border': '#E5E2DD',
+                        }
+                    },
+                    fontFamily: {
+                        'inter': ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-warm-bg-primary text-warm-text-primary min-h-screen">
+    <!-- Header -->
+    <header class="bg-warm-card border-b border-warm-border sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-warm-accent-amber rounded-lg flex items-center justify-center">
+                        <span class="text-white font-bold text-lg">Mx</span>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold text-warm-text-primary">MaxFix</h1>
+                        <p class="text-sm text-warm-text-secondary">Vehicle Maintenance Made Simple</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-4">
+                    <button class="relative p-2 text-warm-text-secondary hover:text-warm-text-primary">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
+                        </svg>
+                        <span class="absolute top-1 right-1 w-4 h-4 bg-warm-accent-amber text-white text-xs rounded-full flex items-center justify-center">3</span>
+                    </button>
+                    <div class="flex items-center gap-2">
+                        <div class="w-8 h-8 bg-warm-accent-green rounded-full flex items-center justify-center text-white font-medium">
+                            JD
+                        </div>
+                        <span class="font-medium">John D.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 py-8">
+        <!-- Welcome Section -->
+        <div class="mb-8">
+            <h2 class="text-2xl font-bold mb-1">Good morning, John! <span class="text-2xl">☀️</span></h2>
+            <p class="text-warm-text-secondary">You have <span class="font-semibold text-warm-accent-amber">2 vehicles</span> needing attention</p>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="bg-warm-card rounded-xl border border-warm-border p-6 mb-8 shadow-sm">
+            <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                <span>📋</span> Quick Actions
+            </h3>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <button class="flex flex-col items-center gap-2 p-4 bg-warm-bg-secondary rounded-lg hover:bg-warm-border transition-colors">
+                    <div class="w-12 h-12 bg-warm-accent-amber rounded-full flex items-center justify-center text-white text-xl">+</div>
+                    <span class="font-medium text-sm">Add Vehicle</span>
+                </button>
+                <button class="flex flex-col items-center gap-2 p-4 bg-warm-bg-secondary rounded-lg hover:bg-warm-border transition-colors">
+                    <div class="w-12 h-12 bg-warm-accent-blue rounded-full flex items-center justify-center text-white text-xl">🔧</div>
+                    <span class="font-medium text-sm">Log Service</span>
+                </button>
+                <button class="flex flex-col items-center gap-2 p-4 bg-warm-bg-secondary rounded-lg hover:bg-warm-border transition-colors">
+                    <div class="w-12 h-12 bg-warm-accent-green rounded-full flex items-center justify-center text-white text-xl">📍</div>
+                    <span class="font-medium text-sm">Find Shop</span>
+                </button>
+                <button class="flex flex-col items-center gap-2 p-4 bg-warm-bg-secondary rounded-lg hover:bg-warm-border transition-colors">
+                    <div class="w-12 h-12 bg-warm-text-secondary rounded-full flex items-center justify-center text-white text-xl">⏰</div>
+                    <span class="font-medium text-sm">View Reminders</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Main Grid -->
+        <div class="grid md:grid-cols-2 gap-6">
+            <!-- My Vehicles -->
+            <div class="bg-warm-card rounded-xl border border-warm-border p-6 shadow-sm">
+                <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                    <span>🚗</span> My Vehicles
+                </h3>
+                
+                <!-- Vehicle Card 1 -->
+                <div class="bg-warm-bg-secondary rounded-lg p-4 mb-4">
+                    <div class="flex items-start justify-between mb-2">
+                        <div>
+                            <h4 class="font-semibold">Toyota Fortuner</h4>
+                            <p class="text-sm text-warm-text-secondary font-mono">GXY-1234</p>
+                        </div>
+                        <span class="px-2 py-1 bg-amber-100 text-warm-accent-amber text-xs font-medium rounded-full">⚠️ Due</span>
+                    </div>
+                    <div class="mb-3">
+                        <div class="flex justify-between text-sm mb-1">
+                            <span class="text-warm-text-secondary">45,200 km</span>
+                            <span class="text-warm-text-secondary">50,000 km</span>
+                        </div>
+                        <div class="w-full bg-warm-border rounded-full h-2">
+                            <div class="bg-warm-accent-amber h-2 rounded-full" style="width: 90%"></div>
+                        </div>
+                    </div>
+                    <p class="text-sm text-warm-accent-amber font-medium">⚠️ Oil change due</p>
+                </div>
+
+                <!-- Vehicle Card 2 -->
+                <div class="bg-warm-bg-secondary rounded-lg p-4 mb-4">
+                    <div class="flex items-start justify-between mb-2">
+                        <div>
+                            <h4 class="font-semibold">Honda Civic</h4>
+                            <p class="text-sm text-warm-text-secondary font-mono">ABC-5678</p>
+                        </div>
+                        <span class="px-2 py-1 bg-green-100 text-warm-accent-green text-xs font-medium rounded-full">✓ OK</span>
+                    </div>
+                    <div class="mb-3">
+                        <div class="flex justify-between text-sm mb-1">
+                            <span class="text-warm-text-secondary">32,100 km</span>
+                            <span class="text-warm-text-secondary">40,000 km</span>
+                        </div>
+                        <div class="w-full bg-warm-border rounded-full h-2">
+                            <div class="bg-warm-accent-green h-2 rounded-full" style="width: 80%"></div>
+                        </div>
+                    </div>
+                    <p class="text-sm text-warm-accent-green font-medium">✓ All services current</p>
+                </div>
+
+                <button class="text-warm-accent-amber font-medium text-sm hover:underline">
+                    View All Vehicles →
+                </button>
+            </div>
+
+            <!-- Upcoming Maintenance -->
+            <div class="bg-warm-card rounded-xl border border-warm-border p-6 shadow-sm">
+                <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                    <span>⏰</span> Upcoming Maintenance
+                </h3>
+
+                <div class="space-y-4">
+                    <div class="flex gap-4 p-4 bg-warm-bg-secondary rounded-lg">
+                        <div class="w-12 h-12 bg-amber-100 rounded-lg flex items-center justify-center text-amber-600 font-bold">
+                            15
+                        </div>
+                        <div>
+                            <p class="font-semibold">Oil Change</p>
+                            <p class="text-sm text-warm-text-secondary">Honda Civic</p>
+                            <p class="text-xs text-warm-text-secondary">December 2024</p>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-4 p-4 bg-warm-bg-secondary rounded-lg">
+                        <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center text-blue-600 font-bold">
+                            20
+                        </div>
+                        <div>
+                            <p class="font-semibold">Tire Rotation</p>
+                            <p class="text-sm text-warm-text-secondary">Toyota Fortuner</p>
+                            <p class="text-xs text-warm-text-secondary">December 2024</p>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-4 p-4 bg-warm-bg-secondary rounded-lg">
+                        <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center text-green-600 font-bold">
+                            05
+                        </div>
+                        <div>
+                            <p class="font-semibold">Brake Inspection</p>
+                            <p class="text-sm text-warm-text-secondary">Honda Civic</p>
+                            <p class="text-xs text-warm-text-secondary">January 2025</p>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="mt-4 text-warm-accent-amber font-medium text-sm hover:underline">
+                    View All Reminders →
+                </button>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

@@ -1,6 +1,6 @@
 <div 
     id="map" 
-    class="w-full bg-gt-bg-900 relative rounded-xl overflow-hidden" 
+    class="w-full bg-slate-100 relative rounded-xl overflow-hidden border border-slate-200" 
     style="height: calc(100vh - 180px); min-height: 500px;"
     wire:ignore
 >
@@ -8,22 +8,22 @@
     <div class="absolute bottom-6 right-6 z-[400] flex flex-col gap-2">
         <button 
             id="map-zoom-in"
-            class="w-10 h-10 bg-gt-bg-900/90 text-white rounded flex items-center justify-center border border-white/10 hover:bg-gt-accent-orange hover:border-gt-accent-orange transition-colors shadow-lg backdrop-blur-sm"
+            class="w-10 h-10 bg-white text-slate-700 rounded-lg flex items-center justify-center border border-slate-200 hover:text-brand-blue hover:border-brand-blue transition-colors shadow-sm"
         >
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
         </button>
         <button 
             id="map-zoom-out"
-            class="w-10 h-10 bg-gt-bg-900/90 text-white rounded flex items-center justify-center border border-white/10 hover:bg-gt-accent-orange hover:border-gt-accent-orange transition-colors shadow-lg backdrop-blur-sm"
+            class="w-10 h-10 bg-white text-slate-700 rounded-lg flex items-center justify-center border border-slate-200 hover:text-brand-blue hover:border-brand-blue transition-colors shadow-sm"
         >
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"/></svg>
         </button>
     </div>
 
     <div class="absolute top-4 left-4 z-[400]">
-        <div class="glass-panel px-3 py-1.5 rounded text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2 border border-gt-accent-cyan/30 shadow-[0_0_10px_rgba(0,212,255,0.2)]">
-            <span class="w-2 h-2 rounded-full bg-gt-accent-cyan animate-pulse"></span>
-            Satellite Uplink Active
+        <div class="bg-white px-3 py-1.5 rounded-lg text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-2 border border-brand-blue/30 shadow-sm">
+            <span class="w-2 h-2 rounded-full bg-brand-blue animate-pulse"></span>
+            Live Map Active
         </div>
     </div>
 </div>
@@ -45,8 +45,8 @@
         attributionControl: false
     }).setView([{{ $this->mapCenterLat }}, {{ $this->mapCenterLng }}], {{ $this->mapZoom }});
     
-    // Dark mode map tiles
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+    // Light mode map tiles
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
         subdomains: 'abcd',
         maxZoom: 20
@@ -58,17 +58,16 @@
 
     // Custom marker icon creation
     const createMarkerIcon = (isSelected) => {
-        const color = isSelected ? '#ff6b35' : '#706f6c';
+        const color = isSelected ? '#EA580C' : '#64748B'; // brand-orange or slate-500
         const size = isSelected ? 32 : 24;
         const zIndex = isSelected ? 1000 : 1;
         
         return L.divIcon({
             className: 'custom-div-icon',
             html: `<div class="relative transition-all duration-300 transform hover:scale-110">
-                    <div class="w-${isSelected ? '8' : '6'} h-${isSelected ? '8' : '6'} rounded-full border-2 border-white shadow-lg flex items-center justify-center transition-colors duration-300" style="background-color: ${color}; box-shadow: 0 0 15px ${color}80;">
+                    <div class="w-${isSelected ? '8' : '6'} h-${isSelected ? '8' : '6'} rounded-full border-2 border-white shadow-md flex items-center justify-center transition-colors duration-300" style="background-color: ${color};">
                         <div class="w-2 h-2 bg-white rounded-full"></div>
                     </div>
-                    ${isSelected ? '<div class="absolute -bottom-2 left-1/2 -translate-x-1/2 w-1 h-4 bg-white/50 blur-sm"></div>' : ''}
                    </div>`,
             iconSize: [size, size],
             iconAnchor: [size/2, size/2],
@@ -89,20 +88,20 @@
                 zIndexOffset: isSelected ? 1000 : 0
             }).addTo(map);
 
-            // GT7 Style Popup
+            // SaaS Style Popup
             const popupContent = `
-                <div class="p-4 min-w-[200px] bg-gt-bg-900 text-white rounded-lg border border-white/10 shadow-xl font-sans">
-                    <h3 class="font-bold text-lg mb-1 italic uppercase tracking-wider text-gt-accent-orange">${shop.name}</h3>
-                    <p class="text-xs text-gt-text-secondary mb-2">${shop.address}</p>
-                    <div class="flex items-center justify-between border-t border-white/10 pt-2 mt-2">
-                        <span class="text-xs font-mono text-gt-accent-cyan">${shop.distance ? shop.distance.toFixed(1) + ' km' : ''}</span>
-                        <button onclick="Livewire.dispatch('selectShop', { shopId: ${shop.id} })" class="text-xs font-bold uppercase tracking-wide hover:text-gt-accent-orange transition-colors">Details &rarr;</button>
+                <div class="p-4 min-w-[200px] bg-white text-slate-800 rounded-lg border border-slate-200 shadow-md font-sans">
+                    <h3 class="font-bold text-lg mb-1 text-slate-900 tracking-tight">${shop.name}</h3>
+                    <p class="text-xs text-slate-500 mb-2">${shop.address}</p>
+                    <div class="flex items-center justify-between border-t border-slate-100 pt-3 mt-3">
+                        <span class="text-xs font-semibold text-brand-blue bg-blue-50 px-2 py-0.5 rounded">${shop.distance ? shop.distance.toFixed(1) + ' km' : ''}</span>
+                        <button onclick="Livewire.dispatch('selectShop', { shopId: ${shop.id} })" class="text-xs font-bold text-slate-700 hover:text-brand-orange transition-colors">Details &rarr;</button>
                     </div>
                 </div>
             `;
 
             marker.bindPopup(popupContent, {
-                className: 'gt-map-popup',
+                className: 'saas-map-popup',
                 closeButton: false,
                 offset: [0, -10]
             });
@@ -138,14 +137,14 @@
 </script>
 
 <style>
-    .gt-map-popup .leaflet-popup-content-wrapper {
+    .saas-map-popup .leaflet-popup-content-wrapper {
         background: transparent;
         box-shadow: none;
         padding: 0;
     }
-    .gt-map-popup .leaflet-popup-tip {
-        background: #15151e; /* gt-bg-900 */
-        border: 1px solid rgba(255,255,255,0.1);
+    .saas-map-popup .leaflet-popup-tip {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
     }
 </style>
 @endscript
